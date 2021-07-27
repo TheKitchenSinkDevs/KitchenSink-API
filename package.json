@@ -1,0 +1,27 @@
+{
+	"name": "kitchensink",
+	"version": "0.1.0",
+	"description": "Backend APIs (Plumbing) for the Kitchen Sink Project",
+	"main": "dist/index.js",
+	"scripts": {
+		"prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+		"build": "tsc",
+		"prestart": "npm run build",
+		"start": "node .",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Conor Villarreal",
+	"license": "MIT",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"express-winston": "^4.1.0",
+		"winston": "^3.3.3"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.12",
+		"@types/express": "^4.17.13",
+		"@types/node": "^16.4.3",
+		"typescript": "^4.3.5"
+	}
+}
