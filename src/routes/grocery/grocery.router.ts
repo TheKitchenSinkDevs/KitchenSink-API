@@ -2,7 +2,7 @@
  * https://auth0.com/blog/node-js-and-typescript-tutorial-build-a-crud-api/
  */
 import express, { Request, Response } from "express";
-import {Item } from "./grocery.interface";
+import { Item, BaseItem } from "./grocery.interface";
 import * as GroceryService from "./grocery.service";
 
 export const groceryRouter = express.Router();
@@ -31,8 +31,9 @@ groceryRouter.get("/", async (req: Request, res: Response) => {
  * Get grocery item by ID
  */
 groceryRouter.get("/:id", async (req: Request, res: Response) => {
+	const id: number = parseInt(req.params.id);
 	try {
-		const item: Item = await GroceryService.get(parseInt(req.params.id));
+		const item: Item = await GroceryService.get(id);
 		res.status(200).send(item);
 
 	} catch (e) {
@@ -50,5 +51,33 @@ groceryRouter.post("/", async (req: Request, res: Response) => {
 		res.status(201).json(newItem);
 	} catch (e) {
 		res.status(500).send(e.message);
+	}
+});
+
+
+groceryRouter.put("/:id", async (req: Request, res: Response) => {
+	const id: number = parseInt(req.params.id);
+	try{
+		const update: Item = req.body;
+
+		const old: Item = await GroceryService.get(id);
+
+		if(old) {
+			const updatedItem = await GroceryService.update(id, update);
+			return res.status(200).json(updatedItem);
+		}
+
+	} catch (e) {
+		res.status(500).send(e.message);
+	}
+});
+
+groceryRouter.delete("/:id", async (req: Request, res: Response) => {
+	const id: number = parseInt(req.params.id);
+	try {
+		const toDelete: Item = await GroceryService.remove(id);
+		res.status(201).json(toDelete);
+	} catch(e) {
+		res.status(200).json(e.message);
 	}
 });
