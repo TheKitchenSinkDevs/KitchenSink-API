@@ -60,6 +60,7 @@ export const remove = async (id: number): Promise<Item> => {
  * @param id of Item to update
  * @param update updated Item
  */
-export const update = async (id: number, update: Item) => {
+export const update = async (id: number, update: Item): Promise<Recipe> => {
 	groceryListSample[id] = update;
+	return groceryListSample[id];
 };

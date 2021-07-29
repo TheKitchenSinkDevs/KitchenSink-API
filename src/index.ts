@@ -8,6 +8,7 @@ import helmet from "helmet";
 
 // Routes
 import { groceryRouter } from "./routes/grocery/grocery.router";
+import { recipeRouter } from "./routes/recipes/recipes.router";
 
 /**
  * Config and setup
@@ -38,5 +39,6 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/grocery", groceryRouter);
+app.use("/api/recipes", recipeRouter);
 
 

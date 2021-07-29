@@ -12,7 +12,10 @@ export interface Recipe {
 	ingredients: Item[],
 	nutrition: Nutrition,
 	categories?: string[],
-	directions?: string[]
+	directions?: string[],
+	description?: string
 }
 
-
+export interface Recipes {
+	[key: number]: Recipe
+}

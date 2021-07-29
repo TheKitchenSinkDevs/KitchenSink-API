@@ -66,6 +66,7 @@ groceryRouter.put("/:id", async (req: Request, res: Response) => {
 			const updatedItem = await GroceryService.update(id, update);
 			return res.status(200).json(updatedItem);
 		}
+		res.status(400).send(null);
 
 	} catch (e) {
 		res.status(500).send(e.message);
