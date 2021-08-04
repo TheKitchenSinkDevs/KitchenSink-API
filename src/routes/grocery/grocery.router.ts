@@ -1,6 +1,7 @@
 /**
  * https://auth0.com/blog/node-js-and-typescript-tutorial-build-a-crud-api/
  */
+import { GroceryItem } from "@prisma/client";
 import express, { Request, Response } from "express";
 import { Item, BaseItem } from "./grocery.interface";
 import * as GroceryService from "./grocery.service";
@@ -33,7 +34,7 @@ groceryRouter.get("/", async (req: Request, res: Response) => {
 groceryRouter.get("/:id", async (req: Request, res: Response) => {
 	const id: number = parseInt(req.params.id);
 	try {
-		const item: Item = await GroceryService.get(id);
+		const item: GroceryItem = await GroceryService.get(id);
 		res.status(200).send(item);
 
 	} catch (e) {
@@ -47,8 +48,8 @@ groceryRouter.get("/:id", async (req: Request, res: Response) => {
 groceryRouter.post("/", async (req: Request, res: Response) => {
 	try {
 		const item: BaseItem = req.body;
-		const newItem = await GroceryService.create(item);
-		res.status(201).json(newItem);
+		const result = await GroceryService.create(item);
+		res.status(201).json(result);
 	} catch (e) {
 		res.status(500).send(e.message);
 	}

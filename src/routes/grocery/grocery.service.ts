@@ -1,7 +1,10 @@
+
+import prisma from "../../lib/prisma";
 import { Item, BaseItem } from "./grocery.interface";
 
 //Sample data imports
-import { groceryListSample } from "../../sample/groceryListSample";
+//import { groceryListSample } from "../../sample/groceryListSample";
+import { GroceryItem } from "@prisma/client";
 
 
 
@@ -13,8 +16,9 @@ import { groceryListSample } from "../../sample/groceryListSample";
  * Gets an array of the values of all grocery items in the list
  * @returns Item[] a list of all items.
  */
-export const getAll = async (): Promise<Item[]> => {
-	return Object.values(groceryListSample);
+export const getAll = async (): Promise<GroceryItem[]> => {
+	const items = await prisma.groceryItem.findMany({});
+	return items;
 };
 
 /**
@@ -22,8 +26,13 @@ export const getAll = async (): Promise<Item[]> => {
  * @param id of the Item to retrieve
  * @returns the Item corresponding to the ID
  */
-export const get = async (id: number): Promise<Item> => {
-	return groceryListSample[id];
+export const get = async (id: number): Promise<GroceryItem> => {
+	const item = await prisma.groceryItem.findUnique({
+		where: {
+			id: id
+		}
+	});
+	return item;
 };
 
 /**
@@ -31,14 +40,16 @@ export const get = async (id: number): Promise<Item> => {
  * @param newItem of new Item to add to the grocery list
  * @returns the new item
  */
-export const create = async (newItem: BaseItem): Promise<Item> => {
-	const id = new Date().valueOf();
-
-	groceryListSample[id] = {
-		id,
-		...newItem
-	};
-	return groceryListSample[id];
+export const create = async (newItem: BaseItem): Promise<GroceryItem> => {
+	const result = await prisma.groceryItem.create({
+		data: {
+			name: newItem.name,
+			quantitycount: newItem.quantity.count,
+			quantityunit: newItem.quantity.unit,
+			category: newItem.category
+		}
+	});
+	return result;
 };
 
 /**
@@ -46,13 +57,13 @@ export const create = async (newItem: BaseItem): Promise<Item> => {
  * @param id of Item to remove
  * @return Item removed from grocery list
  */
-export const remove = async (id: number): Promise<Item> => {
-	const item = groceryListSample[id];
-	if(item) {
-		delete groceryListSample[id];
-		return item;
-	}
-	return null;
+export const remove = async (id: number): Promise<GroceryItem> => {
+	const item = await prisma.groceryItem.delete({
+		where: {
+			id: id
+		}
+	});
+	return item;
 };
 
 /**
@@ -60,7 +71,17 @@ export const remove = async (id: number): Promise<Item> => {
  * @param id of Item to update
  * @param update updated Item
  */
-export const update = async (id: number, update: Item): Promise<Recipe> => {
-	groceryListSample[id] = update;
-	return groceryListSample[id];
+export const update = async (id: number, update: Item): Promise<GroceryItem> => {
+	const updated = await prisma.groceryItem.update({
+		where: {
+			id: id
+		},
+		data: {
+			name: update.name,
+			quantitycount: update.quantity.count,
+			quantityunit: update.quantity.unit,
+			category: update.category
+		}
+	});
+	return updated;
 };
