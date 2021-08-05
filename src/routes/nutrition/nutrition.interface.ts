@@ -1,7 +1,7 @@
 
 
 
-export interface Nutrition extends BaseNutriton {
+export interface Nutrition extends BaseNutrition {
 	other: {
 		[key: string]: number
 	}

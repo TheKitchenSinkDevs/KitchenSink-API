@@ -2,6 +2,8 @@
  * Contains models and interfaces for the /grocery api endpoint
  */
 
+import { Nutrition } from "../nutrition/nutrition.interface";
+
 
 export interface BaseItem {
 	name: string,
@@ -10,7 +12,8 @@ export interface BaseItem {
 		unit?: string
 	},
 	category?: string,
-	recipe?: string
+	recipe?: string | number
+	nutrition?: Nutrition
 }
 
 export interface Item extends BaseItem {

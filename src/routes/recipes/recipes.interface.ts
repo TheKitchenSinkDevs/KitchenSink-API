@@ -13,7 +13,8 @@ export interface Recipe {
 	nutrition: Nutrition,
 	categories?: string[],
 	directions?: string[],
-	description?: string
+	description?: string,
+	user?: number
 }
 
 export interface Recipes {
