@@ -21,7 +21,7 @@ export const groceryRouter = express.Router();
  */
 groceryRouter.get("/", async (req: Request, res: Response) => {
 	try {
-		const items: Item[] = await GroceryService.getAll();
+		const items: GroceryItem[] = await GroceryService.getAll();
 		res.status(200).send(items);
 	} catch (e) {
 		res.status(500).send(e.message);
@@ -47,7 +47,11 @@ groceryRouter.get("/:id", async (req: Request, res: Response) => {
  */
 groceryRouter.post("/", async (req: Request, res: Response) => {
 	try {
-		const item: BaseItem = req.body;
+		if (req.body.name == null) {
+			res.status(400).send("Missing required parameter: name");
+			return;
+		}
+		const item: GroceryItem = req.body;
 		const result = await GroceryService.create(item);
 		res.status(201).json(result);
 	} catch (e) {
@@ -58,16 +62,17 @@ groceryRouter.post("/", async (req: Request, res: Response) => {
 
 groceryRouter.put("/:id", async (req: Request, res: Response) => {
 	const id: number = parseInt(req.params.id);
-	try{
-		const update: Item = req.body;
+	if (!id) {
+		res.status(400).send("No id given");
+	}
+	try {
 
-		const old: Item = await GroceryService.get(id);
-
-		if(old) {
-			const updatedItem = await GroceryService.update(id, update);
+		const old: GroceryItem = await GroceryService.get(id);
+		if (old) {
+			const updatedItem = await GroceryService.update(id, req.body);
 			return res.status(200).json(updatedItem);
 		}
-		res.status(400).send(null);
+		res.status(400).send("GroceryItem with ID " + id + " not found.");
 
 	} catch (e) {
 		res.status(500).send(e.message);
@@ -76,10 +81,16 @@ groceryRouter.put("/:id", async (req: Request, res: Response) => {
 
 groceryRouter.delete("/:id", async (req: Request, res: Response) => {
 	const id: number = parseInt(req.params.id);
+	if (!id) {
+		res.status(400).send("No id given");
+	}
 	try {
-		const toDelete: Item = await GroceryService.remove(id);
-		res.status(201).json(toDelete);
-	} catch(e) {
+		const toDelete: GroceryItem = await GroceryService.remove(id);
+		if (!toDelete) {
+			res.status(400).send("GroceryItem with ID " + id + " not found.");
+		}
+		res.status(200).json(toDelete);
+	} catch (e) {
 		res.status(200).json(e.message);
 	}
 });

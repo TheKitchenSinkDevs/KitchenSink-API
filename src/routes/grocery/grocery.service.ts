@@ -1,6 +1,5 @@
 
 import prisma from "../../lib/prisma";
-import { Item, BaseItem } from "./grocery.interface";
 
 //Sample data imports
 //import { groceryListSample } from "../../sample/groceryListSample";
@@ -40,14 +39,9 @@ export const get = async (id: number): Promise<GroceryItem> => {
  * @param newItem of new Item to add to the grocery list
  * @returns the new item
  */
-export const create = async (newItem: BaseItem): Promise<GroceryItem> => {
+export const create = async (newItem: GroceryItem): Promise<GroceryItem> => {
 	const result = await prisma.groceryItem.create({
-		data: {
-			name: newItem.name,
-			quantitycount: newItem.quantity.count,
-			quantityunit: newItem.quantity.unit,
-			category: newItem.category
-		}
+		data: newItem
 	});
 	return result;
 };
@@ -58,12 +52,16 @@ export const create = async (newItem: BaseItem): Promise<GroceryItem> => {
  * @return Item removed from grocery list
  */
 export const remove = async (id: number): Promise<GroceryItem> => {
-	const item = await prisma.groceryItem.delete({
-		where: {
-			id: id
-		}
-	});
-	return item;
+	try {
+		const item = await prisma.groceryItem.delete({
+			where: {
+				id: id
+			}
+		});
+		return item;
+	} catch (e) {
+		return null;
+	}
 };
 
 /**
@@ -71,17 +69,12 @@ export const remove = async (id: number): Promise<GroceryItem> => {
  * @param id of Item to update
  * @param update updated Item
  */
-export const update = async (id: number, update: Item): Promise<GroceryItem> => {
+export const update = async (id: number, update: GroceryItem): Promise<GroceryItem> => {
 	const updated = await prisma.groceryItem.update({
 		where: {
 			id: id
 		},
-		data: {
-			name: update.name,
-			quantitycount: update.quantity.count,
-			quantityunit: update.quantity.unit,
-			category: update.category
-		}
+		data: update
 	});
 	return updated;
 };
